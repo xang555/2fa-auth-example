@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block header %}
+    {{title}}
+{% endblock %}
+
+{% block body %}
+
+    {% if is_one_auth %}
+
+    <div>
+        <form method="POST">
+            <input name="uname" type="text" placeholder="Username" />
+            <br />
+            <input name="passwd" type="password" placeholder="Password" />
+            <br />
+            <input name="submit" type="submit" />
+        </form>
+        <div style="color: 'red';">
+            <h6>{{errMsg}}</h6>
+        </div>
+    </div>
+
+    {% elif is_two_auth %}
+
+        <div>
+            <form method="POST" action="/login">
+                {% if is_enable_2fa === false %}
+                <img src={{img}} alt="qrcode" />
+                {% endif %}
+                <br />
+                <input name="two_facetor_code" type="text" placeholder="Two factor number" />
+                <br />
+                <input name="submit" type="submit" title="Verify" />
+            </form>
+            <div style="color: 'red';">
+                <h6>{{errMsg}}</h6>
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}

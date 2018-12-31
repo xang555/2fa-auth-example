@@ -1,0 +1,11 @@
+{
+    "auth": {
+        "uname": "xang",
+        "passwd": "motherfucker"
+    },
+    "two_factor_auth": {
+        "is_enable": false,
+        "two_factor_auth_secret": null,
+        "two_factor_auth_secret_temp": null
+    }
+}
