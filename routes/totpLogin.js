@@ -5,16 +5,16 @@ const path = require('path')
 const speakeasy = require("speakeasy");
 const QRCode = require('qrcode')
 
-const fake_data_path = path.join(__dirname,'..', 'fake-data.json')
+const fake_data_totp_path = path.join(__dirname,'..', 'fake-data-totp.json')
 
-/* GET home page. */
+/** login for totp */
 router.get('/', function (req, res, next) {
-    res.render('login', { title: 'login', is_one_auth: true });
+    res.render('login', { title: 'login', is_one_auth: true, target: '/totp/login' });
 });
 
 router.post('/', function (req, res, next) {
 
-    fs.readFile(fake_data_path, (err, data) => {
+    fs.readFile(fake_data_totp_path, (err, data) => {
         if(err){
             throw err
         }
@@ -33,23 +33,23 @@ router.post('/', function (req, res, next) {
             const verified = speakeasy.totp.verify({ 
                 secret: base32secret,
                 encoding: 'base32',
-                window: 1,
+                window: 2,
                 token: two_facetor_code });
             if(verified){
                 json_data['two_factor_auth']['two_factor_auth_secret_temp'] = null
             json_data['two_factor_auth']['two_factor_auth_secret'] = base32secret
             json_data['two_factor_auth']['is_enable'] = true
-            fs.writeFile(fake_data_path, JSON.stringify(json_data), (err) => {
+            fs.writeFile(fake_data_totp_path, JSON.stringify(json_data), (err) => {
                 if(err){
                     throw err
                 }
                 
-                req.session.user = {
+                req.session.totp = {
                     name: "xang",
                     auth: true
                 }
 
-                res.redirect('/')
+                res.redirect('/totp')
 
             })
             }else {
@@ -60,30 +60,21 @@ router.post('/', function (req, res, next) {
             if(json_data['auth']['uname'] === uname && json_data['auth']['passwd'] === passwd) {
 
                 if(json_data['two_factor_auth']['is_enable']) {
-                    return res.render('login', { title: 'login', is_two_auth: true, is_enable_2fa: true  })
+                    return res.render('login', { title: 'login', is_two_auth: true, is_enable_2fa: true, target: '/totp/login'  })
                 }else {
                     const secret = speakeasy.generateSecret({
                         name: "xangnam two-factor"
                     });
-                    console.log(secret.base32)
                     json_data['two_factor_auth']['two_factor_auth_secret_temp'] = secret.base32
-                    fs.writeFile(fake_data_path, JSON.stringify(json_data), (err) => {
+                    fs.writeFile(fake_data_totp_path, JSON.stringify(json_data), (err) => {
                         if(err){
                             throw err
                         }
-                        // const otpauth_url = speakeasy.otpauthURL({
-                        //     secret: secret.base32,
-                        //     label: "vte-camp",
-                        //     type: 'hotp',
-                        //     counter: 0,
-                        //     issuer: 'xangnam',
-                        //     encoding: 'base32'
-                        // })
                         QRCode.toDataURL(secret.otpauth_url, function (err, data_url) {
                             if(err) {
                                 throw err
                             }
-                            return res.render('login', { title: 'login', img: data_url, is_two_auth: true, is_enable_2fa: false  })
+                            return res.render('login', { title: 'login', img: data_url, is_two_auth: true, is_enable_2fa: false, target: '/totp/login'  })
                         });
 
                     })
@@ -91,7 +82,7 @@ router.post('/', function (req, res, next) {
     
             }else {
                 // auth fail
-                return res.render('login', { errMsg: "User or Password fail!", title: 'login', is_one_auth: true  })
+                return res.render('login', { errMsg: "User or Password fail!", title: 'login', is_one_auth: true , target: '/totp/login' })
             }
         }
 

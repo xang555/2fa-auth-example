@@ -6,7 +6,8 @@ var logger = require('morgan');
 const consolidate= require('consolidate')
 var nuncjuck=require('nunjucks');
 var indexRouter = require('./routes/index');
-var login = require('./routes/login');
+var totp_login = require('./routes/totpLogin');
+var hotp_login = require('./routes/hotpLogin');
 var cookieSession = require('cookie-session')
 
 var app = express();
@@ -28,7 +29,8 @@ app.use(cookieSession({
 }))
 
 app.use('/', indexRouter);
-app.use('/login', login)
+app.use('/totp/login', totp_login)
+app.use('/hotp/login', hotp_login)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

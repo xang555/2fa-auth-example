@@ -24,7 +24,7 @@
     {% elif is_two_auth %}
 
         <div>
-            <form method="POST" action="/login">
+            <form method="POST" action={{target}}>
                 {% if is_enable_2fa === false %}
                 <img src={{img}} alt="qrcode" />
                 {% endif %}
