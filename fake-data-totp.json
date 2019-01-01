@@ -1,1 +1,1 @@
-{"auth":{"uname":"xang","passwd":"ilovedocker"},"two_factor_auth":{"is_enable":true,"two_factor_auth_secret":"MVBTWMKBJZKUOSSKKQQW6QDRNE7SSMSCNNIEEVSOLNCGEVRDOERQ","two_factor_auth_secret_temp":null}}
+{"auth":{"uname":"xang","passwd":"ilovedocker"},"two_factor_auth":{"is_enable":false,"two_factor_auth_secret":null,"two_factor_auth_secret_temp":null}}
